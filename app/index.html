@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width" />
+  <title><%= title %></title>
+  <script src="http://www.parsecdn.com/js/parse-1.2.13.min.js"></script>
+  <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAB-yl9gFlGK0lM4JjX2p2BKiuUfaaKe6E&libraries=places"></script>
+  <% if (debug === false) { %>
+  <link type="text/css" rel="stylesheet" media="all" href="/styles/app.<%= version %>.css" />
+  <% } %>
+</head>
+<body>
+  <div id="application"></div>
+  <script src="/js/app.<%= version %>.js"></script>
+</body>
+</html>
