@@ -27,6 +27,17 @@ var EditComponent = React.createClass({
     document.getElementById('editProfileAddress') && (new google.maps.places.Autocomplete(document.getElementById('editProfileAddress'), {}));
   },
 
+  componentWillReceiveProps(nextProps) {
+    console.log(nextProps);
+    if (nextProps.user.location && (this.state.loading == true)) {
+      this.setState({loading: false});
+      this.setState({success: true});
+    };
+    if (!nextProps.user.location && (this.state.loading == true)) {
+      this.setState({success: false});
+    }
+  },
+
   getInitialState() {
     return {
       loading: false,
@@ -71,6 +82,15 @@ var EditComponent = React.createClass({
   render: function render() {
     var errors = this.state.errors;
     var { user, location} = this.props;
+    var successMessage;
+
+    if (this.state.success != undefined) {
+      if (this.state.success) {
+        successMessage = "Saved edited profile."
+      } else {
+        successMessage = "Couldnt save edited profile."
+      }
+    };
 
     return (
       <Modal show={this.props.show} onHide={this.props.onHide} onShow={this.createInput}>
@@ -174,6 +194,9 @@ var EditComponent = React.createClass({
                 Edit Profile
             </LaddaButton>
           </form>
+          <span>
+            {successMessage}
+          </span>
         </Modal.Body>
 
         <Modal.Footer>
@@ -188,7 +211,8 @@ var EditComponent = React.createClass({
 
 function mapStateToProps(state) {
   return {
-    location: state.specials.location,
+    user: state.user,
+    location: (state.user && state.user.location) || state.specials.location,
   };
 };
 

@@ -18,6 +18,7 @@ const ProfileItem = React.createClass({
   },
 
   render() {
+    console.log(this.props);
     return (
       <li className="nav-header">
         <div className="profile-element">
@@ -40,7 +41,7 @@ const ProfileItem = React.createClass({
 function mapStateToProps(state) {
   return {
     user: state.user,
-    location: state.specials.location,
+    location: (state.user && state.user.location) || state.specials.location,
     specials: state.specials,
   };
 }

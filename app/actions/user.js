@@ -88,6 +88,17 @@ export function editProfile(user, location, userData) {
                   user: user
                 };
               })())
+            },
+
+            error: function() {
+              user.location = false;
+              return dispatch( (() => {
+                return {
+                  type: EDIT,
+                  user: user
+                };
+              })())
+
             }
           });
         },
