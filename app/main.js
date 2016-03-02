@@ -1,4 +1,5 @@
 import './styles/main.less';
+import './sharefish.png';
 import './index.html';
 require('babel-polyfill');
 
@@ -47,7 +48,7 @@ const routes = {
       component: AuthComponent
     },
     { path: routePaths.signup.path,
-      component: SignUpComponent
+      component: SignUpComponent,
     },
     { path: routePaths.index.path,
       onEnter: requireAuth,

@@ -43,10 +43,7 @@ const ItemFormComponent = React.createClass({
         this.props.updateSpecial(this.props.special);
         this.props.endEdit();
       } else {
-        let Special = Parse.Object.extend('Specials');
-        let special = new Special(res.data);
-        special.set('Dates', this.props.Dates);
-        this.props.saveSpecial(special);
+        this.props.saveSpecial(res.data, this.props.Dates);
       }
     }
   },

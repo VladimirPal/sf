@@ -146,7 +146,7 @@ const PageComponent = React.createClass({
 function mapStateToProps(state) {
   return {
     specials: state.specials.items,
-    inLoad: state.specials.inLoad
+    inLoad: state.specials.inLoad,
   };
 }
 

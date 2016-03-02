@@ -1,9 +1,11 @@
+import React from 'react';
+import Modal from 'react-bootstrap/lib/Modal';
+import Button from 'react-bootstrap/lib/Button';
+
 import $ from 'jquery';
 
-import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Link } from 'react-router';
 import LaddaButton from 'react-ladda';
 import Mask from 'react-maskedinput';
 
@@ -11,28 +13,18 @@ import ValidateMixin from '../../lib/validate-mixin/mixin'
 import routePaths from '../../routes';
 
 import * as UserActions from '../../actions/user';
+import * as SpecialsActions from '../../actions/specials';
 
 
-const PageComponent = React.createClass({
+var EditComponent = React.createClass({
   mixins: [ValidateMixin],
 
   contextTypes: {
-    router: React.PropTypes.object.isRequired
+    store: React.PropTypes.object
   },
 
-  componentWillMount() {
-    $('body').addClass('gray-bg');
-  },
-
-  componentDidMount() {
-    new google.maps.places.Autocomplete(document.getElementById('address'), {});
-  },
-
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.user.authenticated()) {
-      this.context.router.replace(routePaths.index);
-      $('body').removeClass('gray-bg');
-    }
+  createInput() {
+    document.getElementById('editProfileAddress') && (new google.maps.places.Autocomplete(document.getElementById('editProfileAddress'), {}));
   },
 
   getInitialState() {
@@ -54,17 +46,17 @@ const PageComponent = React.createClass({
   },
 
   handleChange(event) {
-    let validateObj = {};
-    let fieldName = event.target.name;
+    var validateObj = {};
+    var fieldName = event.target.name;
 
     validateObj[fieldName] = this.state.fields[fieldName];
-    let res = this.validate('change', validateObj);
+    var res = this.validate('change', validateObj);
     this.setState({errors: res.errors});
   },
 
   handleSubmit(event) {
     event.preventDefault();
-    let res = this.validate();
+    var res = this.validate();
 
     if (Object.keys(res.errors).length !== 0) {
       this.setState({errors: res.errors});
@@ -72,24 +64,28 @@ const PageComponent = React.createClass({
       res.data.username = res.data.email
 
       this.setState({loading: true});
-      this.props.signUp(res.data)
+      this.props.actionTwo.editProfile(Parse.User.current(), this.props.location, res.data)
     }
   },
 
-  render() {
-    let errors = this.state.errors;
-    let { user } = this.props;
+  render: function render() {
+    var errors = this.state.errors;
+    var { user, location} = this.props;
 
     return (
-      <div className="middle-box text-center loginscreen" onSubmit={this.handleSubmit}>
-        <div>
-          <img style={{maxWidth: "100%;"}} src="./sharefish.png" />
+      <Modal show={this.props.show} onHide={this.props.onHide} onShow={this.createInput}>
+        <Modal.Header>
+            <Modal.Title>{this.props.title}</Modal.Title>
+        </Modal.Header>
+
+        <Modal.Body onSubmit={this.handleSubmit}>
           <form className="m-t" role="form">
             <div className={errors.email ? 'form-group has-error' : 'form-group'}>
               <label className="error">{errors.email}</label>
               <input className="form-control" name="email"
                 onChange={this.handleChange}
                 placeholder="Email"
+                defaultValue={Parse.User.current().get("email")}
                 ref="email"
                 type="text" />
             </div>
@@ -116,6 +112,7 @@ const PageComponent = React.createClass({
               <label className="error">{errors.firstName}</label>
               <input className="form-control" name="firstName"
                 onChange={this.handleChange}
+                defaultValue={Parse.User.current().get("firstName")}
                 placeholder="First Name"
                 ref="firstName"
                 type="text" />
@@ -125,6 +122,7 @@ const PageComponent = React.createClass({
               <label className="error">{errors.lastName}</label>
               <input className="form-control" name="lastName"
                 onChange={this.handleChange}
+                defaultValue={Parse.User.current().get("lastName")}
                 placeholder="Last Name"
                 ref="lastName"
                 type="text" />
@@ -132,7 +130,8 @@ const PageComponent = React.createClass({
 
             <div className={errors.venueName ? 'form-group has-error' : 'form-group'}>
               <label className="error">{errors.venueName}</label>
-              <input className="form-control" name="venueName"
+              <input defaultValue={location && location.get && location.get("Name")}
+                className="form-control" name="venueName"
                 onChange={this.handleChange}
                 placeholder="Venue name"
                 ref="venueName"
@@ -141,7 +140,7 @@ const PageComponent = React.createClass({
 
             <div className={errors.venueDescription ? 'form-group has-error' : 'form-group'}>
               <label className="error">{errors.venueDescription}</label>
-              <input maxLength="60" className="form-control" name="venueDescription"
+              <input maxLength="60" defaultValue={location && location.get && location.get("Description")} className="form-control" name="venueDescription"
                 onChange={this.handleChange}
                 placeholder="Venue description"
                 ref="venueDescription"
@@ -152,6 +151,7 @@ const PageComponent = React.createClass({
               <label className="error">{errors.phoneNumber}</label>
               <Mask className='form-control' mask='###-###-####'
                 onChange={this.handleChange}
+                value={location && location.get && location.get("Phone")}
                 pattern='^\d{3}-\d{3}-\d{4}$'
                 name="phoneNumber"
                 placeholder='Phone number'
@@ -160,7 +160,8 @@ const PageComponent = React.createClass({
 
             <div className={errors.address ? 'form-group has-error' : 'form-group'}>
               <label className="error">{errors.address}</label>
-              <input className="form-control" id="address" name="address"
+              <input className="form-control" id="editProfileAddress" name="address"
+                defaultValue={location && location.get && location.get("Address")}
                 onChange={this.handleChange}
                 placeholder="Address"
                 ref="address"
@@ -170,27 +171,32 @@ const PageComponent = React.createClass({
             <LaddaButton buttonStyle="expand-right" className="btn btn-primary block full-width m-b"
               loading={this.state.loading}
               type="submit">
-              Sign up
+                Edit Profile
             </LaddaButton>
-            <p className="text-muted text-center"><small>Already have an account?</small></p>
-            <Link className="btn btn-sm btn-white btn-block" to={routePaths.login.path} >Sign in</Link>
           </form>
-        </div>
-      </div>
+        </Modal.Body>
+
+        <Modal.Footer>
+          <Button onClick={this.props.onHide}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
     );
   }
 });
 
-
 function mapStateToProps(state) {
   return {
-    user: state.user
+    location: state.specials.location,
   };
-}
-
+};
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators(UserActions, dispatch);
+  return {
+    actionOne: bindActionCreators(SpecialsActions, dispatch),
+    actionTwo: bindActionCreators(UserActions, dispatch)
+  }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(PageComponent);
+export default connect(mapStateToProps, mapDispatchToProps)(EditComponent);

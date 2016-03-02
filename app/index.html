@@ -9,6 +9,22 @@
   <% if (debug === false) { %>
   <link type="text/css" rel="stylesheet" media="all" href="/styles/app.<%= version %>.css" />
   <% } %>
+  <style type="text/css">
+    .pac-container {
+      background-color: #FFF;
+      z-index: 22222220;
+    }
+
+    .btn-primary {
+      background-color: #FFA407 !important;
+      border-color: #FFA407 !important;
+    }
+
+    .nav > li.active {
+        border-left: 4px solid #FFA407;
+        background: #02C5F6;
+    }
+  </style>
 </head>
 <body>
   <div id="application"></div>

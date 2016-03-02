@@ -5,9 +5,9 @@ export const DELETE_SPECIAL = 'DELETE_SPECIAL';
 
 
 export function getSpecials(day) {
-  let Specials = Parse.Object.extend('Specials');
-  let query = new Parse.Query(Specials);
-  query.equalTo('Dates', day);
+  var query = new Parse.Query('Locations');
+  query.include('User');
+  query.equalTo('User', Parse.User.current());
 
   return dispatch => {
     dispatch(
@@ -15,40 +15,74 @@ export function getSpecials(day) {
         return {
           type: GET_SPECIALS,
           specials: [],
-          inLoad: true
+          inLoad: true,
+          location: {}
         };
       })()
     );
 
-    return query.find({
-      success: (results) => {
-        return dispatch( (() => {
-          return {
-            type: GET_SPECIALS,
-            specials: results,
-            inLoad: false
-          };
-        })())
+    return query.first({
+      success: function(location) {
+        var query = new Parse.Query('Specials');
+
+        query.include('Merchant');
+        query.equalTo('Merchant', location);
+        query.equalTo('Dates', day);
+
+        console.log(location);
+        query.find({
+          success: function(results) {
+            return dispatch( (() => {
+              return {
+                type: GET_SPECIALS,
+                specials: results,
+                inLoad: false,
+                location: location
+              };
+            })())
+          }
+        })
       }
     });
+
   }
 }
 
 
-export function saveSpecial(special) {
+export function saveSpecial(data, day) {
+  var Special = Parse.Object.extend('Specials');
+  var special = new Special(data);
+
+  special.set('Dates', day);
+
   return dispatch => {
-    return special.save(null,
-      {
-        success: (special) => {
-          return dispatch( (() => {
-            return {
-              type: SAVE_SPECIAL,
-              special: special
-            };
-          })())
-        },
+    var query = new Parse.Query('Locations');
+
+    query.include('User');
+    query.equalTo('User', Parse.User.current());
+
+    return query.first({
+      success: function(location) {
+        var point = location.attributes.Location;
+
+        special.set("Location", point);
+        special.set("BarName", location.attributes.Name);
+        special.set("Merchant", location);
+
+        special.save(null,
+          {
+            success: (special) => {
+              return dispatch( (() => {
+                return {
+                  type: SAVE_SPECIAL,
+                  special: special
+                };
+              })())
+            },
+          }
+        );
       }
-    );
+    });
 
   }
 }
