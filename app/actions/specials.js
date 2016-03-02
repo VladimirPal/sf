@@ -56,6 +56,15 @@ export function saveSpecial(data, day) {
   special.set('Dates', day);
 
   return dispatch => {
+    dispatch(
+      (() => {
+        return {
+          type: SAVE_SPECIAL,
+          inSave: true
+        };
+      })()
+    );
+
     var query = new Parse.Query('Locations');
 
     query.include('User');
@@ -75,7 +84,8 @@ export function saveSpecial(data, day) {
               return dispatch( (() => {
                 return {
                   type: SAVE_SPECIAL,
-                  special: special
+                  special: special,
+                  inSave: false
                 };
               })())
             },

@@ -112,7 +112,7 @@ const ItemFormComponent = React.createClass({
           <div className="col-sm-2">
             <LaddaButton disabled={this.state.disabled} buttonStyle="expand-right" className="btn btn-primary block full-width m-b"
               onClick={this.handleSubmit}
-              loading={false}
+              loading={this.props.inSave}
               type="submit">
               Add
             </LaddaButton>
@@ -124,9 +124,15 @@ const ItemFormComponent = React.createClass({
 });
 
 
+function mapStateToProps(state) {
+  return {
+    inSave: state.specials.inSave,
+  };
+}
+
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(SpecialsActions, dispatch);
 }
 
-export default connect(null, mapDispatchToProps)(ItemFormComponent);
+export default connect(mapStateToProps, mapDispatchToProps)(ItemFormComponent);

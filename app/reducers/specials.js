@@ -7,8 +7,10 @@ export default function currentUser(specials = {location: {}, items: []}, action
       return {location: action.location, items: action.specials.slice(), inLoad: action.inLoad};
     case SAVE_SPECIAL:
       let items = specials.items.slice();
-      items.unshift(action.special);
-      return {items: items, inLoad: false}
+      if (!action.inSave) {
+        items.unshift(action.special);
+      }
+      return {items: items, inLoad: false, inSave: action.inSave}
     case UPDATE_SPECIAL:
       return specials;
     case DELETE_SPECIAL:
