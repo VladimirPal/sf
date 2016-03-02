@@ -28,6 +28,11 @@ const ProfileItem = React.createClass({
           <a onClick={this.toggleResetPasswordModalShow}>
             Edit Profile
           </a>
+          <div>
+            <a src="http://www.sharefishapp.com/" style={{color: "#FFA407"}}>
+              ShareFish App
+            </a>
+          </div>
           <EditModal
             onConfirm={this.toggleResetPasswordModalShow}
             onHide={this.toggleResetPasswordModalShow}
