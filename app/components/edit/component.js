@@ -28,7 +28,6 @@ var EditComponent = React.createClass({
   },
 
   componentWillReceiveProps(nextProps) {
-    console.log(nextProps);
     if (nextProps.user.location && (this.state.loading == true)) {
       this.setState({loading: false});
       this.setState({success: true});
