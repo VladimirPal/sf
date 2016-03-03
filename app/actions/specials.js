@@ -29,7 +29,6 @@ export function getSpecials(day) {
         query.equalTo('Merchant', location);
         query.equalTo('Dates', day);
 
-        console.log(location);
         query.find({
           success: function(results) {
             return dispatch( (() => {

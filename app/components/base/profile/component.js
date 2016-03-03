@@ -18,6 +18,7 @@ const ProfileItem = React.createClass({
   },
 
   render() {
+
     return (
       <li className="nav-header">
         <div className="profile-element">
