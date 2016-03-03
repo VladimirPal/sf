@@ -39,15 +39,16 @@ const PageComponent = React.createClass({
       loading: false,
       errors: {},
       fields: {
-        email: {validators: [this.validators.required, this.validators.email({validateEvent: 'submit'})]},
-        password: this.validators.required,
+        email: {validators: [this.validators.required({errorMsg: 'Email is required'}), this.validators.email({validateEvent: 'submit'})]},
+        password: this.validators.required({errorMsg: 'Password is required'}),
         password1: this.validators.equalField({field: 'password', errorMsg: 'Passwords must match'}),
-        venueName: this.validators.required,
-        venueDescription: this.validators.required,
-        phoneNumber: this.validators.required,
-        firstName: this.validators.required,
-        lastName: this.validators.required,
-        address: this.validators.required
+        venueName: this.validators.required({errorMsg: 'Venue name is required'}),
+        venueDescription: this.validators.required({errorMsg: 'Description is required'}),
+        file: this.validators.required({errorMsg: 'File is required'}),
+        phoneNumber: this.validators.required({errorMsg: 'Phone is required'}),
+        firstName: this.validators.required({errorMsg: 'First name is required'}),
+        lastName: this.validators.required({errorMsg: 'Last name is required'}),
+        address: this.validators.required({errorMsg: 'Address is required'})
       }
     };
   },
@@ -68,7 +69,14 @@ const PageComponent = React.createClass({
     if (Object.keys(res.errors).length !== 0) {
       this.setState({errors: res.errors});
     } else {
-      res.data.username = res.data.email
+      let file;
+
+      res.data.username = res.data.email;
+
+      file = this.refs.file.files[0];
+      file = new Parse.File(file.name, file);
+
+      res.data.file = file;
 
       this.setState({loading: true});
       this.props.signUp(res.data)
@@ -157,6 +165,15 @@ const PageComponent = React.createClass({
                 name="phoneNumber"
                 placeholder='Phone number'
                 ref='phoneNumber' type='tel'/>
+            </div>
+
+            <div className={errors.file ? 'form-group has-error' : 'form-group'}>
+              <label className={errors.file ? 'error' : ''}>{errors.file || "Choose one image to represent your venue:"}</label>
+              <input className="form-control" name="file"
+                onChange={this.handleChange}
+                ref="file"
+                accept="image/gif, image/jpeg, image/jpg, image/png"
+                type="file" />
             </div>
 
             <div className={errors.address ? 'form-group has-error' : 'form-group'}>

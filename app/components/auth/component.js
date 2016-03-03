@@ -68,7 +68,35 @@ const PageComponent = React.createClass({
     }
   },
 
+  requestPasswordReset: function requestPasswordReset() {
+    let email = this.refs.email.value;
+
+    if (email) {
+      this.setState({loading: true});
+      Parse.User.requestPasswordReset(email, {
+        success: () => {
+          this.setState({loading: false});
+          alert("Email is sent!")
+        },
+        error: (error) => {
+          this.setState({loading: false});
+          alert("Error: " + error.code + " " + error.message);
+        }
+      });
+    } else {
+      this.setState({needEmail: true});
+    }
+  },
+
   render() {
+    let needEmail;
+
+    if (this.state.needEmail) {
+      needEmail = <div>
+        In order to send reset password request we need to know your email.
+      </div>
+    }
+
     let errors = this.state.errors;
 
     let emailClasses = cx({
@@ -107,7 +135,12 @@ const PageComponent = React.createClass({
               type="submit">
               Log in
             </LaddaButton>
-            <a><small>Forgot your password?</small></a>
+            <a onClick={this.requestPasswordReset}>
+              <small>Forgot your password?</small>
+            </a>
+            <small>
+              {needEmail}
+            </small>
             <Link to={routePaths.signup.path} className="btn btn-sm btn-white btn-block">Sign up</Link>
           </form>
         </div>

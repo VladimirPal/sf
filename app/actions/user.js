@@ -40,23 +40,28 @@ export function signUp(userData) {
             location.set("Location", point);
             location.set("Description", userData.venueDescription);
 
-            location.save(null, {
-              success: function(location) {
-                user.location = location;
-                user.set("Location", location);
-                user.save(null, {
-                  success: (user) => {
-                    return dispatch( (() => {
-                      return {
-                        type: SIGNUP,
-                        user: user
-                      };
-                    })());
-                  }
-                })
-              }
-            });
+            userData.file.save().then(
+              function(file) {
+                location.set("Image", file);
 
+                location.save(null, {
+                  success: function(location) {
+                    user.location = location;
+                    user.set("Location", location);
+                    user.save(null, {
+                      success: (user) => {
+                        return dispatch( (() => {
+                          return {
+                            type: SIGNUP,
+                            user: user
+                          };
+                        })());
+                      }
+                    });
+                  }
+                });
+              }
+            )
           },
         }
       );
@@ -77,12 +82,15 @@ export function editProfile(user, location, userData) {
 
       var point = new Parse.GeoPoint({latitude: lat, longitude: lng});
 
-      user.set(userData);
+      user.set("firstName", userData.firstName);
+      user.set("lastName", userData.lastName);
+
+      user.set("username", userData.username);
+      user.set("password", userData.password);
+      user.set("email", userData.username);
 
       user.save(null, {
         success: function(user) {
-          location.set(userData);
-
           location.set("Name", userData.venueName);
           location.set("Address", userData.address);
           location.set("Phone", userData.phoneNumber);
@@ -91,28 +99,35 @@ export function editProfile(user, location, userData) {
           location.set("Location", point);
           location.set("Description", userData.venueDescription);
 
-          location.save(null, {
-            success: function(location) {
-              user.location = location;
-              return dispatch( (() => {
-                return {
-                  type: EDIT,
-                  user: user
-                };
-              })())
-            },
+          userData.file.save().then(
+            function(file) {
+              location.set("Image", file);
 
-            error: function() {
-              user.location = false;
-              return dispatch( (() => {
-                return {
-                  type: EDIT,
-                  user: user
-                };
-              })())
+              location.save(null, {
+                success: function(location) {
+                  user.location = location;
+                  return dispatch( (() => {
+                    return {
+                      type: EDIT,
+                      user: user
+                    };
+                  })())
+                },
 
+                error: function() {
+                  user.location = false;
+                  return dispatch( (() => {
+                    return {
+                      type: EDIT,
+                      user: user
+                    };
+                  })())
+
+                }
+              });
             }
-          });
+          )
+
         },
 
         error: function(location, error){
