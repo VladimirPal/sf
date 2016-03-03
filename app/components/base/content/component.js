@@ -11,7 +11,7 @@ export default React.createClass({
 
     if (currentUser) {
       return (
-        <div className='gray-bg dashbard-1' id='page-wrapper'>
+        <div className='gray-bg dashbard-1' id='page-wrapper' style={{minHeight: "100% !important", height: "100%"}}>
           {this.props.mainPage}
         </div>
       );

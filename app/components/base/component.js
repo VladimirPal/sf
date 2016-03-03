@@ -14,7 +14,11 @@ export default React.createClass({
     let currentUser = Parse.User.current();
 
     return (
-      <div id='wrapper'>
+      <div id='wrapper' style={{minHeight: "100% !important", height: "100%"}}>
+          <a href="http://www.sharefishapp.com/" style={{position: "absolute", left: "3px", bottom: "3px", color: "#FFA407"}}>
+            ShareFish App
+          </a>
+
         {currentUser &&
         <SidebarComponent/>
         }

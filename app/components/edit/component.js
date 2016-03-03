@@ -45,7 +45,7 @@ var EditComponent = React.createClass({
       fields: {
         email: {validators: [this.validators.required, this.validators.email({validateEvent: 'submit'})]},
         password: this.validators.required,
-        password1: this.validators.equalField({field: 'password'}),
+        password1: this.validators.equalField({field: 'password', errorMsg: 'Passwords must match'}),
         venueName: this.validators.required,
         venueDescription: this.validators.required,
         phoneNumber: this.validators.required,
@@ -157,10 +157,12 @@ var EditComponent = React.createClass({
                 ref="venueName"
                 type="text" />
             </div>
-
+            <span style={{color: "#02C5F6", fontSize: "0.8em"}}>
+              used {(this.refs.venueDescription && (this.refs.venueDescription.value.length || "0")) || (location && location.get && location.get("Description").length)} of 120 chars
+            </span>
             <div className={errors.venueDescription ? 'form-group has-error' : 'form-group'}>
               <label className="error">{errors.venueDescription}</label>
-              <input maxLength="60" defaultValue={location && location.get && location.get("Description")} className="form-control" name="venueDescription"
+              <input maxLength="120" defaultValue={location && location.get && location.get("Description")} className="form-control" name="venueDescription"
                 onChange={this.handleChange}
                 placeholder="Venue description"
                 ref="venueDescription"
@@ -191,7 +193,7 @@ var EditComponent = React.createClass({
             <LaddaButton buttonStyle="expand-right" className="btn btn-primary block full-width m-b"
               loading={this.state.loading}
               type="submit">
-                Edit Profile
+                Save
             </LaddaButton>
           </form>
           <span>

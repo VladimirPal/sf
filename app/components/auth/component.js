@@ -84,7 +84,7 @@ const PageComponent = React.createClass({
     return (
       <div className="middle-box text-center loginscreen" onSubmit={this.handleSubmit}>
         <div>
-          <img style={{maxWidth: "100%;"}} src="./sharefish.png" />
+          <img style={{maxWidth: "100%"}} src="./sharefish.png" />
           <form className="m-t" role="form">
             <div className={emailClasses}>
               <label className="error">{errors.email}</label>

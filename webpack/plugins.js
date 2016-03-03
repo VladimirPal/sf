@@ -11,7 +11,11 @@ var TEST = process.env.NODE_ENV === 'test';
 var cssBundle = path.join('styles', util.format('[name].%s.css', pkg.version));
 
 var plugins = [
-  new webpack.optimize.OccurenceOrderPlugin()
+  new webpack.optimize.OccurenceOrderPlugin(),
+  new webpack.ProvidePlugin({
+    $: "jquery",
+    jQuery: "jquery"
+  })
 ];
 if (DEBUG) {
   plugins.push(

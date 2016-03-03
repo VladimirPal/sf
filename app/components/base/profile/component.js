@@ -18,7 +18,6 @@ const ProfileItem = React.createClass({
   },
 
   render() {
-    console.log(this.props);
     return (
       <li className="nav-header">
         <div className="profile-element">
@@ -28,11 +27,6 @@ const ProfileItem = React.createClass({
           <a onClick={this.toggleResetPasswordModalShow}>
             Edit Profile
           </a>
-          <div>
-            <a src="http://www.sharefishapp.com/" style={{color: "#FFA407"}}>
-              ShareFish App
-            </a>
-          </div>
           <EditModal
             onConfirm={this.toggleResetPasswordModalShow}
             onHide={this.toggleResetPasswordModalShow}

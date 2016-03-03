@@ -4,7 +4,14 @@ export const EDIT = 'EDIT';
 
 
 export function signUp(userData) {
-  var user = new Parse.User(userData);
+  var user = new Parse.User();
+
+  user.set("firstName", userData.firstName);
+  user.set("lastName", userData.lastName);
+
+  user.set("username", userData.username);
+  user.set("password", userData.password);
+  user.set("email", userData.username);
 
   var geocoder = new google.maps.Geocoder();
 
@@ -36,12 +43,17 @@ export function signUp(userData) {
             location.save(null, {
               success: function(location) {
                 user.location = location;
-                return dispatch( (() => {
-                  return {
-                    type: SIGNUP,
-                    user: user
-                  };
-                })());
+                user.set("Location", location);
+                user.save(null, {
+                  success: (user) => {
+                    return dispatch( (() => {
+                      return {
+                        type: SIGNUP,
+                        user: user
+                      };
+                    })());
+                  }
+                })
               }
             });
 

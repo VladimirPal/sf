@@ -19,7 +19,7 @@ const ItemFormComponent = React.createClass({
       disabled: true,
       fields: {
         Title: this.validators.required,
-        Price: {validators: this.validators.required, converter: this.converters.int},
+        Price: {validators: this.validators.required, converter: this.converters.setFloat},
         EmojiVar: {validators: this.validators.required, converter: this.converters.int}
       }
     };
@@ -38,6 +38,11 @@ const ItemFormComponent = React.createClass({
     event.preventDefault();
     if (!this.state.disabled) {
       let res = this.validate();
+
+      this.refs.Title.value = "";
+      this.refs.Price.value = "";
+      this.refs.EmojiVar.value = "";
+
       if (this.props.special) {
         this.props.special.set(res.data);
         this.props.updateSpecial(this.props.special);

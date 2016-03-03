@@ -12,7 +12,6 @@ import routePaths from '../../routes';
 
 import * as UserActions from '../../actions/user';
 
-
 const PageComponent = React.createClass({
   mixins: [ValidateMixin],
 
@@ -42,7 +41,7 @@ const PageComponent = React.createClass({
       fields: {
         email: {validators: [this.validators.required, this.validators.email({validateEvent: 'submit'})]},
         password: this.validators.required,
-        password1: this.validators.equalField({field: 'password'}),
+        password1: this.validators.equalField({field: 'password', errorMsg: 'Passwords must match'}),
         venueName: this.validators.required,
         venueDescription: this.validators.required,
         phoneNumber: this.validators.required,
@@ -83,7 +82,7 @@ const PageComponent = React.createClass({
     return (
       <div className="middle-box text-center loginscreen" onSubmit={this.handleSubmit}>
         <div>
-          <img style={{maxWidth: "100%;"}} src="./sharefish.png" />
+          <img style={{maxWidth: "100%"}} src="./sharefish.png" />
           <form className="m-t" role="form">
             <div className={errors.email ? 'form-group has-error' : 'form-group'}>
               <label className="error">{errors.email}</label>
@@ -107,7 +106,7 @@ const PageComponent = React.createClass({
               <label className="error">{errors.password1}</label>
               <input className="form-control" name="password1"
                 onChange={this.handleChange}
-                placeholder="Repeat password"
+                placeholder="Confirm password"
                 ref="password1"
                 type="password" />
             </div>
@@ -138,10 +137,12 @@ const PageComponent = React.createClass({
                 ref="venueName"
                 type="text" />
             </div>
-
-            <div className={errors.venueDescription ? 'form-group has-error' : 'form-group'}>
+            <span style={{color: "#02C5F6", fontSize: "0.8em"}}>
+              used {(this.refs.venueDescription && this.refs.venueDescription.value.length) || 0} of 120 chars
+            </span>
+            <div id="description" className={errors.venueDescription ? 'form-group has-error' : 'form-group'}>
               <label className="error">{errors.venueDescription}</label>
-              <input maxLength="60" className="form-control" name="venueDescription"
+              <input maxLength="120" className="form-control" name="venueDescription"
                 onChange={this.handleChange}
                 placeholder="Venue description"
                 ref="venueDescription"
