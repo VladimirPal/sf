@@ -10,17 +10,6 @@ export function getSpecials(day) {
   query.equalTo('User', Parse.User.current());
 
   return dispatch => {
-    dispatch(
-      (() => {
-        return {
-          type: GET_SPECIALS,
-          specials: [],
-          inLoad: true,
-          location: {}
-        };
-      })()
-    );
-
     return query.first({
       success: function(location) {
         var query = new Parse.Query('Specials');
@@ -29,7 +18,17 @@ export function getSpecials(day) {
         query.equalTo('Merchant', location);
         query.equalTo('Dates', day);
 
-        console.log(location);
+        dispatch(
+          (() => {
+            return {
+              type: GET_SPECIALS,
+              specials: [],
+              inLoad: true,
+              location: location
+            };
+          })()
+        );
+
         query.find({
           success: function(results) {
             return dispatch( (() => {
