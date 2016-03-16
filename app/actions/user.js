@@ -39,6 +39,7 @@ export function signUp(userData) {
             location.set("User", user);
             location.set("Location", point);
             location.set("Description", userData.venueDescription);
+            location.set("Website_Address", userData.websiteAddress);
 
             userData.file.save().then(
               function(file) {

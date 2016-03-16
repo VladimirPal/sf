@@ -48,7 +48,8 @@ const PageComponent = React.createClass({
         phoneNumber: this.validators.required({errorMsg: 'Phone is required'}),
         firstName: this.validators.required({errorMsg: 'First name is required'}),
         lastName: this.validators.required({errorMsg: 'Last name is required'}),
-        address: this.validators.required({errorMsg: 'Address is required'})
+        address: this.validators.required({errorMsg: 'Address is required'}),
+        websiteAddress: this.validators.url({validateEvent: 'submit'})
       }
     };
   },
@@ -79,6 +80,9 @@ const PageComponent = React.createClass({
       res.data.file = file;
 
       this.setState({loading: true});
+      if (!res.data.websiteAddress.length) {
+        res.data.websiteAddress = 'www.sharefishapp.com';
+      }
       this.props.signUp(res.data)
     }
   },
@@ -184,6 +188,16 @@ const PageComponent = React.createClass({
                 ref="address"
                 type="text" />
             </div>
+
+            <div className={errors.websiteAddress ? 'form-group has-error' : 'form-group'}>
+              <label className="error">{errors.websiteAddress}</label>
+              <input className="form-control" id="websiteAddress" name="websiteAddress"
+                onChange={this.handleChange}
+                placeholder="Website address"
+                ref="websiteAddress"
+                type="text" />
+            </div>
+
 
             <LaddaButton buttonStyle="expand-right" className="btn btn-primary block full-width m-b"
               loading={this.state.loading}
